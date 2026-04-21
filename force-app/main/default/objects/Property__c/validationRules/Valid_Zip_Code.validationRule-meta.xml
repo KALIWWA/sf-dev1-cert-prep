@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Valid_Zip_Code</fullName>
+    <active>true</active>
+    <description>Validates zip code format (5 digits or 5+4 format). EXAM TIP: Use REGEX function for pattern matching</description>
+    <errorConditionFormula>NOT(
+  OR(
+    REGEX(Zip_Code__c, "[0-9]{5}"),
+    REGEX(Zip_Code__c, "[0-9]{5}-[0-9]{4}")
+  )
+)</errorConditionFormula>
+    <errorDisplayField>Zip_Code__c</errorDisplayField>
+    <errorMessage>Zip Code must be in format 12345 or 12345-6789</errorMessage>
+</ValidationRule>
