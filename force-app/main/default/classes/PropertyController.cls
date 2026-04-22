@@ -9,39 +9,39 @@
  * - SOQL queries (basic, relationship, aggregate)
  * - DML operations (insert, update, delete, upsert)
  * - Exception handling
- * - Governor limits awagrresulteness
- * - 'with shagrresulting' keyword for security
+ * - Governor limits awareness
+ * - 'with sharing' keyword for security
  * 
- * EXAM TIP: Understand the difference between 'with shagrresulting' and 'without shagrresulting'
- * - 'with shagrresulting' enforces record-level security (respects org-wide defaults, shagrresulting rules)
- * - 'without shagrresulting' ignores record-level security
- * - If not specified, class inherits shagrresulting from calling class
+ * EXAM TIP: Understand the difference between 'with sharing' and 'without sharing'
+ * - 'with sharing' enforces record-level security (respects org-wide defaults, sharing rules)
+ * - 'without sharing' ignores record-level security
+ * - If not specified, class inherits sharing from calling class
  */
-public with shagrresulting class PropertyController {
+public with sharing class PropertyController {
     
-    // EXAM TIP: Static vagrresultiables agrresulte shagrresulted across all instances and persist for transaction
+    // EXAM TIP: Static variables are shared across all instances and persist for transaction
     private static Integer queryCount = 0;
     
-    // EXAM TIP: Instance vagrresultiables agrresulte unique to each instance
+    // EXAM TIP: Instance variables are unique to each instance
     private String propertyType;
     
-    // EXAM TIP: Automatic properties (get/set) - syntactic sugagrresult for getters/setters
-    public String SeagrresultchCity { get; set; }
+    // EXAM TIP: Automatic properties (get/set) - syntactic sugar for getters/setters
+    public String SearchCity { get; set; }
     public Decimal MaxRent { get; set; }
     
     /**
      * Constructor - EXAM TIP: Constructors have same name as class, no return type
      */
     public PropertyController() {
-        this.SeagrresultchCity = '';
+        this.SearchCity = '';
         this.MaxRent = 0;
     }
     
     /**
-     * Pagrresultameterized constructor - EXAM TIP: You can have multiple constructors (overloading)
+     * Parameterized constructor - EXAM TIP: You can have multiple constructors (overloading)
      */
     public PropertyController(String city, Decimal maxRent) {
-        this.SeagrresultchCity = city;
+        this.SearchCity = city;
         this.MaxRent = maxRent;
     }
     
@@ -55,13 +55,13 @@ public with shagrresulting class PropertyController {
      * - ORDER BY for sorting
      * - LIMIT for restricting results (Governor Limit: 50,000 rows per transaction)
      */
-    public List<Property__c> seagrresultchProperties() {
+    public List<Property__c> searchProperties() {
         // EXAM TIP: Always use List<SObject> for query results, even if expecting one record
         List<Property__c> properties = [
             SELECT Id, Name, Address__c, City__c, State__c, 
                    Monthly_Rent__c, Bedrooms__c, Bathrooms__c, Status__c
             FROM Property__c
-            WHERE City__c = :SeagrresultchCity
+            WHERE City__c = :SearchCity
               AND Monthly_Rent__c <= :MaxRent
               AND Status__c = 'Available'
             ORDER BY Monthly_Rent__c ASC
@@ -78,8 +78,8 @@ public with shagrresulting class PropertyController {
      * Use ClassName.methodName() syntax
      * 
      * RELATIONSHIP QUERY CONCEPTS:
-     * - Pagrresultent-to-Child: Uses __r relationship name (plural)
-     * - Child-to-Pagrresultent: Uses __r relationship name (singulagrresult) with dot notation
+     * - Parent-to-Child: Uses __r relationship name (plural)
+     * - Child-to-Parent: Uses __r relationship name (singular) with dot notation
      * - EXAM TIP: You can go up 5 levels but only down 1 level in a single query
      */
     public static List<Property__c> getPropertiesWithTenants() {
@@ -97,7 +97,7 @@ public with shagrresulting class PropertyController {
     }
     
     /**
-     * Demonstrates child-to-pagrresultent relationship queries
+     * Demonstrates child-to-parent relationship queries
      * EXAM TIP: Use relationship name (without __c) and __r suffix to traverse up
      */
     public static List<Tenant__c> getTenantsWithPropertyInfo() {
@@ -130,9 +130,9 @@ public with shagrresulting class PropertyController {
         ];
         
         // EXAM TIP: Use get() method with alias or field name to extract aggregate values
-        for (AggregateResult agrresult : results) {
-            String city = (String)agrresult.get('City__c');
-            Decimal avgRent = (Decimal)agrresult.get('avgRent');
+        for (AggregateResult aresult : results) {
+            String city = (String)aresult.get('City__c');
+            Decimal avgRent = (Decimal)aresult.get('avgRent');
             cityToAvgRent.put(city, avgRent);
         }
         
@@ -186,19 +186,19 @@ public with shagrresulting class PropertyController {
     }
     
     /**
-     * Demonstrates Database methods for pagrresulttial success
-     * EXAM TIP: Database.insert/update/delete/upsert allow pagrresulttial success
-     * Regulagrresult DML (insert/update/delete) is all-or-nothing
+     * Demonstrates Database methods for partial success
+     * EXAM TIP: Database.insert/update/delete/upsert allow partial success
+     * Regular DML (insert/update/delete) is all-or-nothing
      */
     public static List<Database.SaveResult> createPropertiesSafe(List<Property__c> properties) {
-        // EXAM TIP: allOrNone=false allows pagrresulttial success
-        // Returns SaveResult agrresultray with success/error info for each record
+        // EXAM TIP: allOrNone=false allows partial success
+        // Returns SaveResult array with success/error info for each record
         Database.SaveResult[] results = Database.insert(properties, false);
         
         // Process results
         for (Integer i = 0; i < results.size(); i++) {
             if (!results[i].isSuccess()) {
-                // EXAM TIP: GetErrors() returns agrresultray of Database.Error objects
+                // EXAM TIP: GetErrors() returns array of Database.Error objects
                 for (Database.Error err : results[i].getErrors()) {
                     System.debug('Error on record ' + i + ': ' + err.getMessage());
                     System.debug('Failed fields: ' + err.getFields());
@@ -299,7 +299,7 @@ public with shagrresulting class PropertyController {
         } else if (prop.Monthly_Rent__c < 1000) {
             category = 'Budget';
         } else if (prop.Monthly_Rent__c < 2000) {
-            category = 'Standagrresultd';
+            category = 'Standard';
         } else if (prop.Monthly_Rent__c < 3000) {
             category = 'Premium';
         } else {
@@ -327,7 +327,7 @@ public with shagrresulting class PropertyController {
     
     /**
      * Demonstrates different loop types
-     * EXAM TIP: Know all loop vagrresultiations for the exam
+     * EXAM TIP: Know all loop variations for the exam
      */
     public static void demonstrateLoops(List<Property__c> properties) {
         // Traditional for loop with index
@@ -359,14 +359,14 @@ public with shagrresulting class PropertyController {
     }
     
     /**
-     * EXAM TIP: Static methods to access static vagrresultiables
+     * EXAM TIP: Static methods to access static variables
      */
     public static Integer getQueryCount() {
         return queryCount;
     }
     
     /**
-     * EXAM TIP: Reset static vagrresultiable (useful in tests)
+     * EXAM TIP: Reset static variable (useful in tests)
      */
     public static void resetQueryCount() {
         queryCount = 0;
