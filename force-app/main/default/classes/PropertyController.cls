@@ -130,11 +130,12 @@ public with sharing class PropertyController {
         ];
         
         // EXAM TIP: Use get() method with alias or field name to extract aggregate values
-        for (AggregateResult ar : results) {
-            String city = (String)ar.get('City__c');
-            Decimal avgRent = (Decimal)ar.get('avgRent');
+        for (AggregateResult aresult : results) {
+            String city = (String)aresult.get('City__c');
+            Decimal avgRent = (Decimal)aresult.get('avgRent');
             cityToAvgRent.put(city, avgRent);
         }
+        
         
         return cityToAvgRent;
     }
