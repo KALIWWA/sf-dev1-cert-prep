@@ -17,6 +17,7 @@ This project contains a comprehensive **Property Management System** designed to
 | User Interface | 8% | Lightning Web Components |
 | Debug & Deployment | 8% | Debug Logs, Deployment Strategies |
 
+
 ## 🏗️ Project Structure
 
 ```
